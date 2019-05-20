@@ -50,13 +50,14 @@ void setup()
 void loop()
 {
   uint16_t reading = analogRead(PIN_ANALOG);  // 512 +/- 512
-  uint8_t scaled_amplitude = waveform_to_amplitude(reading)/2;
+  // rescale to stay inside defined boundaries
+  uint8_t scaled_amplitude = waveform_to_amplitude(reading)/2;  // 0..255
 
   reader.read(scaled_amplitude);
 
+  // sending constantly would slow down execution a lot
   if (every(10)){
-    // Don't try to read it as text, use a plotter instead
-    // Arduino IDE > Tools > Serial Plotter (check baud!)
+    // Don't try to read it as text, use SerialPlot instead (check baud!)
     Serial.print(scaled_amplitude);
     Serial.print(",");
     Serial.print(reader.get_rolling_avg());

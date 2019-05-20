@@ -26,7 +26,7 @@ class Smoothed_Reader
         {
             INPUT_DATA_TYPE sample = last_values[i_sample];
 
-            // TODO: this is probably bullshit, think about it again
+            // FIMXE: this is probably bullshit, think about it again
             for (uint8_t i_biggest = 0; i_biggest < n; i_biggest++)
             {
                 if (sample > out_biggest[i_biggest]) 
@@ -60,6 +60,9 @@ class Smoothed_Reader
         }
     }
 
+    /**
+     * Get the average of all previous samples
+     * */
     INPUT_DATA_TYPE get_rolling_avg()
     {
         INPUT_DATA_TYPE rolling_avg = 0;
@@ -71,7 +74,9 @@ class Smoothed_Reader
 
         return rolling_avg;
     }
-
+    /**
+     * Get a peak-resistant max
+     * */
     INPUT_DATA_TYPE get_rounded_max(uint8_t n_samples)
     {
         INPUT_DATA_TYPE max_avg = 0;
@@ -87,4 +92,6 @@ class Smoothed_Reader
 
         return max_avg;
     }
+
+    // IDEA: It might be cool to have max values from the last n steps, this makes peaks wider
 };
