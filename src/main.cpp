@@ -2,7 +2,7 @@
 #include "smoothed_reader.h"
 
 const uint8_t PIN_ANALOG = A2;
-const uint8_t N_READINGS = 20;
+const uint8_t N_READINGS = 60;
 
 Smoothed_Reader<uint8_t, N_READINGS> reader;
 
@@ -60,6 +60,8 @@ void loop()
     Serial.print(scaled_amplitude);
     Serial.print(",");
     Serial.print(reader.get_rolling_avg());
+    Serial.print(",");
+    Serial.print(reader.get_rounded_max(10));
 
     Serial.println();
   }
