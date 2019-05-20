@@ -1,4 +1,4 @@
-# Debounce-Reader
-simple reader for arduino to make reading buttons easier
+# Smoothed Reader
+This Reader can be used to smooth out analog values with averages and more.
 
-Simply copy over debounce_reader.h into your project and use like it's shown in the example main.
+This is another spin-off from https://github.com/ModischFabrications/UV_Meter_Code
