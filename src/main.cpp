@@ -16,7 +16,7 @@ bool every(uint16_t ms)
 
 void setup()
 {
-  pinMode(PIN_ANALOG, INPUT);
+  pinMode(PIN_ANALOG, INPUT_PULLUP);
 
   // faster baud means less time spend off-code
   Serial.begin(115200);
