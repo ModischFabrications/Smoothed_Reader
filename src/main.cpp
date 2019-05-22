@@ -2,9 +2,14 @@
 #include "smoothed_reader.h"
 
 const uint8_t PIN_ANALOG = A2;
-const uint8_t N_READINGS = 60;
+const uint16_t N_READINGS = 200;
+const uint8_t N_MAXIMA = 40;
 
-Smoothed_Reader<uint8_t, N_READINGS> reader;
+// [1 readings]  DATA: 197/2048 bytes
+// [2 readings]  DATA: 198/2048 bytes
+// [1001]       DATA: 1197/2048
+
+Smoothed_Reader<uint8_t, N_READINGS, N_MAXIMA> reader;
 
 uint16_t waveform_to_amplitude(uint16_t raw_waveform)
 {
@@ -49,6 +54,8 @@ void setup()
 
 void loop()
 {
+  // you could increase speed *a lot* by triggering ADC-read via a HW-timer 
+  // or manually at the start of each loop after reading it's buffer
   uint16_t reading = analogRead(PIN_ANALOG);  // 512 +/- 512
   // rescale to stay inside defined boundaries
   uint8_t scaled_amplitude = waveform_to_amplitude(reading)/2;  // 0..255
@@ -62,7 +69,9 @@ void loop()
     Serial.print(",");
     Serial.print(reader.get_rolling_avg());
     Serial.print(",");
-    Serial.print(reader.get_rounded_max(10));
+    Serial.print(reader.get_max());
+    Serial.print(",");
+    Serial.print(reader.get_max_history_avg());
 
     Serial.println();
   }
