@@ -24,7 +24,7 @@ private:
 
         for (uint16_t i = 0; i < size; i++)
         {
-            avg += (array[i] / size);
+            avg += (array[i] / size);       // TODO: this might round down a lot
         }
 
         return avg;
@@ -108,6 +108,8 @@ public:
         return array_max(this->last_values, SAMPLE_SIZE);
     }
 
+    // TODO: it might be reasonable to extract max history into other classes
+    // or wrappers as it extends this class too much for an optional feature
     INPUT_DATA_TYPE get_max_history_avg()
     {
         static_assert (HISTORY_SIZE > 0, "No history avg without a history");

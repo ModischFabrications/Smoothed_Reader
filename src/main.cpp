@@ -2,12 +2,18 @@
 #include "smoothed_reader.h"
 
 const uint8_t PIN_ANALOG = A2;
-const uint16_t N_READINGS = 200;
+const uint16_t N_READINGS = 127;
 const uint8_t N_MAXIMA = 40;
 
 // [1 readings]  DATA: 197/2048 bytes
-// [2 readings]  DATA: 198/2048 bytes
 // [1001]       DATA: 1197/2048
+
+/* TODO
+1. amplitude should fall slower than it rises
+2. avg needs fine-tuning in combination with 1
+3. package everything into a MAX4466 package?
+
+*/
 
 Smoothed_Reader<uint8_t, N_READINGS, N_MAXIMA> reader;
 
