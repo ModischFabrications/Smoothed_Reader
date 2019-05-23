@@ -1,14 +1,16 @@
 #pragma once
+/*
+sampling rate varies between projects, skills and applications
+that's why this class takes a sample *size* instead of time.
+Keep in mind that this can really make your DATA usage explode, 
+switch to a smaller data type or sample slower to reduce it.
+*/
 
-// sampling rate varies between projects, skills and applications
-// that's why this class takes a sample *size* instead of time
-// keep in mind that this can really make your DATA usage explode
-
-template <class INPUT_DATA_TYPE, uint16_t SAMPLE_SIZE>
+template <class INPUT_DATA_TYPE, uint16_t N_SAMPLES>
 class Smoothed_Reader
 {
 private:
-    INPUT_DATA_TYPE last_values[SAMPLE_SIZE]; // average over last readings
+    INPUT_DATA_TYPE last_values[N_SAMPLES];
 
     // previous 255 samples (uint8_t) max is way too low with a target of 1s max.
     // A good ADC can reach over 100k Samples per second, most around 10k, a bad one 500.
@@ -21,7 +23,9 @@ private:
 
         for (uint16_t i = 0; i < size; i++)
         {
-            avg += (array[i] / size);       // TODO: this might round down a lot
+            // TODO: this might round down a lot but a whole sum is not 
+            // guaranteed to fit into INPUT_DATA_TYPE
+            avg += (array[i] / size);
         }
 
         return avg;
@@ -44,21 +48,24 @@ public:
     Smoothed_Reader()
     {
         // init with zero
-        for (uint16_t i = 0; i < SAMPLE_SIZE; i++)
+        for (uint16_t i = 0; i < N_SAMPLES; i++)
         {
             last_values[i] = 0;
         }
     }
 
+    /**
+     * Pass input to be smoothed out into reader
+     * */
     void read(INPUT_DATA_TYPE value)
     {
         last_values[next_value_addr] = value;
 
         // wrapping
         this->next_value_addr++;
-        if (this->next_value_addr >= SAMPLE_SIZE)
+        if (this->next_value_addr >= N_SAMPLES)
         {
-            this->next_value_addr -= SAMPLE_SIZE;
+            this->next_value_addr -= N_SAMPLES;
         }
     }
 
@@ -67,7 +74,7 @@ public:
      * */
     INPUT_DATA_TYPE get_rolling_avg()
     {
-        return array_avg(this->last_values, SAMPLE_SIZE);
+        return array_avg(this->last_values, N_SAMPLES);
     }
 
     /**
@@ -76,6 +83,6 @@ public:
     INPUT_DATA_TYPE get_rolling_max()
     {
         // this could also find the last entry in max_history to save performance
-        return array_max(this->last_values, SAMPLE_SIZE);
+        return array_max(this->last_values, N_SAMPLES);
     }
 };
