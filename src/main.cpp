@@ -78,9 +78,11 @@ void loop()
     Serial.print(",");
     Serial.print(reader.get_rolling_avg());
     Serial.print(",");
-    Serial.print(reader.get_rolling_max());
-    Serial.print(",");
     Serial.print(avg_reader.get_rolling_max());
+
+    uint8_t final_value = map(avg_reader.get_rolling_max(), 0, 200, 0, 255);
+    Serial.print(",");
+    Serial.print(final_value);
 
     Serial.println();
   }
