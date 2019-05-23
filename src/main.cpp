@@ -2,8 +2,8 @@
 #include "smoothed_reader.h"
 
 const uint8_t PIN_ANALOG = A2;
-const uint16_t N_READINGS = 127;
-const uint8_t N_MAXIMA = 40;
+const uint16_t N_READINGS = 63;
+const uint8_t N_MAXIMA = 127;
 
 // [1 readings]  DATA: 197/2048 bytes
 // [1001]       DATA: 1197/2048
@@ -15,7 +15,8 @@ const uint8_t N_MAXIMA = 40;
 
 */
 
-Smoothed_Reader<uint8_t, N_READINGS, N_MAXIMA> reader;
+Smoothed_Reader<uint8_t, N_READINGS> reader;
+Smoothed_Reader<uint8_t, N_MAXIMA> avg_reader;
 
 uint16_t waveform_to_amplitude(uint16_t raw_waveform)
 {
@@ -67,17 +68,19 @@ void loop()
   uint8_t scaled_amplitude = waveform_to_amplitude(reading)/2;  // 0..255
 
   reader.read(scaled_amplitude);
+  avg_reader.read(reader.get_rolling_avg());
 
   // sending constantly would slow down execution a lot
   if (every(10)){
     // Don't try to read it as text, use SerialPlot instead (check baud!)
+
     Serial.print(scaled_amplitude);
     Serial.print(",");
     Serial.print(reader.get_rolling_avg());
     Serial.print(",");
-    Serial.print(reader.get_max());
+    Serial.print(reader.get_rolling_max());
     Serial.print(",");
-    Serial.print(reader.get_max_history_avg());
+    Serial.print(avg_reader.get_rolling_max());
 
     Serial.println();
   }
